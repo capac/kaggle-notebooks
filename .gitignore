@@ -125,3 +125,6 @@ dmypy.json
 
 # data directories
 data/
+
+# joblib model files
+.sav

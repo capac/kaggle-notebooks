@@ -127,4 +127,4 @@ dmypy.json
 data/
 
 # joblib model files
-.sav
+*.sav

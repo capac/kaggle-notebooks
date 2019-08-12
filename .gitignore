@@ -128,3 +128,5 @@ data/
 
 # joblib model files
 *.sav
+*.pkl
+

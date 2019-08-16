@@ -1,11 +1,9 @@
 from sklearn.pipeline import Pipeline
 from sklearn.impute import SimpleImputer
-from sklearn.preprocessing import StandardScaler
-from sklearn.preprocessing import OneHotEncoder
+from sklearn.preprocessing import StandardScaler, OneHotEncoder
 from sklearn.compose import ColumnTransformer
 from sklearn.model_selection import train_test_split
-from sklearn.linear_model import SGDClassifier
-from sklearn.linear_model import LogisticRegression
+from sklearn.linear_model import SGDClassifier, LogisticRegression
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.svm import SVC
@@ -60,31 +58,37 @@ class BinaryModelTraining():
         return y_pred_results, y_pred_proba_results
 
 class BinaryClassMetrics():
-    """Class for the calculation of the mean squared error, confusion matrix, precision, recall, F-measure, support and ROC area-under-the-curve score"""
+    """Class for the calculation of the root mean squared error, confusion matrix, precision, recall, F-measure, support and ROC curves and AUC score. Each method requires the y_test as arguments."""
 
     def __init__(self, model_dict, y_pred_results, y_pred_proba_results):
         self.model_dict = model_dict
         self.y_pred_results = y_pred_results
         self.y_pred_proba_results = y_pred_proba_results
 
-    def compute_metrics(self, y_test):
-        """Requires the y_test array as a parameter"""
+    def compute_rmse(self, y_test):
+        """Calculates the root mean square error. Requires the y_test array as an argument."""
 
         for (name, _), y_pred in zip(self.model_dict.items(), self.y_pred_results):
             mse = mean_squared_error(y_test, y_pred)
             print(f'Root mean square error for the {name.lower():s} model: {np.sqrt(mse):.3f}')
         print('\n', end='')
 
+    def compute_confusion_matrix(self, y_test):
+        """Calculates the confusion matrix parameters. Requires the y_test array as an argument."""
+
         for (name, _), y_pred in zip(self.model_dict.items(), self.y_pred_results):
             cm = confusion_matrix(y_test, y_pred)
             print(f'Confusion matrix for the {name.lower()} model: \n{cm}\n')
+
+    def compute_classification_report(self, y_test):
+        """Calculates the precision, recall, F-measure and support for positive and negative reuslts. Requires the y_test array as an argument."""
 
         for (name, _), y_pred in zip(self.model_dict.items(), self.y_pred_results):
             class_report = classification_report(y_test, y_pred)
             print(f'Precision, recall, F-measure and support for the {name.lower()} model: \n{class_report}\n')
 
     def compute_plots(self, y_test):
-        """Requires the y_test array as a parameter"""
+        """Plots ROC curves and AUC values. Requires the y_test array as an argument."""
 
         for (name, _), y_pred, y_pred_proba in zip(self.model_dict.items(), self.y_pred_results, self.y_pred_proba_results):
             model_roc_auc = roc_auc_score(y_test, y_pred)
